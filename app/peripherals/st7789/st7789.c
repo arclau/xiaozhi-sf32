@@ -158,7 +158,6 @@ static void LCD_Init(LCDC_HandleTypeDef *hlcdc)
 
     /* Normal display for Driver Down side */
     parameter[0] = 0x00;
-    parameter[0] = 0x00;
     LCD_WriteReg(hlcdc, REG_NORMAL_DISPLAY, parameter, 1);
 
     /* Color mode 16bits/pixel */
