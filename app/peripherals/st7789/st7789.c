@@ -15,8 +15,12 @@
 #ifdef ROW_OFFSET_PLUS
     #define ROW_OFFSET (ROW_OFFSET_PLUS)
 #else
-    #define ROW_OFFSET (20)
+    #define ROW_OFFSET (0)
 #endif
+#ifndef LCD_PORTRAIT_MODE
+  #define LCD_PORTRAIT_MODE 1
+#endif
+
 
 /**
  * @brief ST7789 chip IDs
@@ -344,16 +348,26 @@ static void LCD_SetRegion(LCDC_HandleTypeDef *hlcdc, uint16_t Xpos0,
     // Set LCDC clip area
     HAL_LCDC_SetROIArea(hlcdc, Xpos0, Ypos0, Xpos1, Ypos1);
 
-    // Set LCD clip area
+    // For landscape (original) the panel needs an X offset.
+    // For portrait mode (竖屏) the same physical offset must be applied to Y.
+#if LCD_PORTRAIT_MODE
+    // Apply ROW_OFFSET to Y coordinates in portrait mode
+    Ypos0 += ROW_OFFSET;
+    Ypos1 += ROW_OFFSET;
+#else
+    // Apply ROW_OFFSET to X coordinates in landscape mode (original behavior)
     Xpos0 += ROW_OFFSET;
     Xpos1 += ROW_OFFSET;
+#endif
 
+    /* write CASET (column address) */
     parameter[0] = (Xpos0) >> 8;
     parameter[1] = (Xpos0) & 0xFF;
     parameter[2] = (Xpos1) >> 8;
     parameter[3] = (Xpos1) & 0xFF;
     LCD_WriteReg(hlcdc, REG_CASET, parameter, 4);
 
+    /* write RASET (row address) */
     parameter[0] = (Ypos0) >> 8;
     parameter[1] = (Ypos0) & 0xFF;
     parameter[2] = (Ypos1) >> 8;
