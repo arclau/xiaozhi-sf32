@@ -37,12 +37,12 @@ if !BSP_USING_BUILTIN_LCD
 
     config LCD_HOR_RES_MAX
         int
-        default 280 if LCD_USING_SPI_ST7789
+        default 240 if LCD_USING_SPI_ST7789
 
 
     config LCD_VER_RES_MAX
         int
-        default 240 if LCD_USING_SPI_ST7789
+        default 280 if LCD_USING_SPI_ST7789
 
 
     config LCD_DPI
